@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="41951f38-9fa3-405c-a616-a32cdc736ce8" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/.idea/Remodify-Backend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/remodify-iam/Remodify-microservice-iam/pom.xml" afterDir="false" />
@@ -360,9 +362,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2naiwg5ajibFrPEcaUwQfr0cfke" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
@@ -373,7 +375,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Escritorio/Remodify-Microservices/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform",
+    "last_opened_file_path": "C:/Documentos/cartunn-microservices-develop",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -404,6 +406,7 @@
       <option name="presentableId" value="Default" />
       <updated>1729217828455</updated>
       <workItem from="1729217831354" duration="680000" />
+      <workItem from="1729218955464" duration="756000" />
     </task>
     <servers />
   </component>
