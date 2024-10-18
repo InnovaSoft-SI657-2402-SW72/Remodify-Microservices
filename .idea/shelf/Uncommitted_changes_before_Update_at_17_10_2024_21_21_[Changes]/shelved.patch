@@ -1,0 +1,2814 @@
+Index: Remodify-microservice-iam/target/classes/application.properties
+===================================================================
+diff --git a/Remodify-microservice-iam/target/classes/application.properties b/Remodify-microservice-iam/target/classes/application.properties
+deleted file mode 100644
+--- a/Remodify-microservice-iam/target/classes/application.properties	(revision 618a719b94b0a57c2b5c3b67d5ee0ddafe7b41dc)
++++ /dev/null	(revision 618a719b94b0a57c2b5c3b67d5ee0ddafe7b41dc)
+@@ -1,22 +0,0 @@
+-spring.application.name=remodify platform
+-
+-# Spring DataSource Configuration
+-spring.datasource.url=jdbc:mysql://localhost:3306/remodify?useSSL=false&serverTimezone=UTC
+-spring.datasource.username=root
+-spring.datasource.password=12345678
+-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+-
+-# Spring Data Jpa Configuration
+-spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+-spring.jpa.show-sql=true
+-
+-# Spring Data Jpa Hibernate Configuration
+-spring.jpa.hibernate.ddl-auto=update
+-spring.jpa.open-in-view=true
+-
+-# Spring Hibernate Dialect Configuration
+-spring.jpa.hibernate.naming.physical-strategy=com.innovasoft.remodify.platform.shared.infrastructure.persistence.jpa.strategy.SnakeCasePhysicalNamingStrategy
+-
+-# JWT Configuration properties
+-authorization.jwt.secret=8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb
+-authorization.jwt.expiration.days=7
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetRoleByNameQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetRoleByNameQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetRoleByNameQuery.java
+new file mode 100644
+--- /dev/null	(date 1729213123398)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetRoleByNameQuery.java	(date 1729213123398)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.iam.domain.model.queries;
++
++import com.innovasoft.remodify.platform.iam.domain.model.valueobjects.Roles;
++
++public record GetRoleByNameQuery(Roles name) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/aggregates/AuditableAbstractAggregateRoot.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/aggregates/AuditableAbstractAggregateRoot.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/aggregates/AuditableAbstractAggregateRoot.java
+new file mode 100644
+--- /dev/null	(date 1729213124022)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/aggregates/AuditableAbstractAggregateRoot.java	(date 1729213124022)
+@@ -0,0 +1,29 @@
++package com.innovasoft.remodify.platform.shared.domain.model.aggregates;
++
++import jakarta.persistence.*;
++import lombok.Getter;
++import org.springframework.data.annotation.CreatedDate;
++import org.springframework.data.annotation.LastModifiedDate;
++import org.springframework.data.domain.AbstractAggregateRoot;
++import org.springframework.data.jpa.domain.support.AuditingEntityListener;
++
++import java.util.Date;
++
++@EntityListeners(AuditingEntityListener.class)
++@MappedSuperclass
++public abstract class AuditableAbstractAggregateRoot <T extends AbstractAggregateRoot<T>> extends AbstractAggregateRoot<T> {
++    @Getter
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @Getter
++    @CreatedDate
++    @Column(nullable = false, updatable = false)
++    private Date createdAt;
++
++    @Getter
++    @LastModifiedDate
++    @Column(nullable = false)
++    private Date updatedAt;
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/interfaces/rest/resources/MessageResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/interfaces/rest/resources/MessageResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/interfaces/rest/resources/MessageResource.java
+new file mode 100644
+--- /dev/null	(date 1729213122927)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/interfaces/rest/resources/MessageResource.java	(date 1729213122927)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.shared.interfaces.rest.resources;
++
++public record MessageResource(String message) {
++
++}
++
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/UsersController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/UsersController.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/UsersController.java
+new file mode 100644
+--- /dev/null	(date 1729213122949)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/UsersController.java	(date 1729213122949)
+@@ -0,0 +1,59 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest;
++
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllUsersQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByIdQuery;
++import com.innovasoft.remodify.platform.iam.domain.services.UserCommandService;
++import com.innovasoft.remodify.platform.iam.domain.services.UserQueryService;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.UpdateUserResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.UserResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.UpdateUserCommandFromResourceAssembler;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import org.springframework.http.MediaType;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++
++import java.util.List;
++
++@RestController
++@RequestMapping(value = "api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
++@Tag(name = "Users", description = "User endpoints")
++public class UsersController {
++
++    private final UserQueryService userQueryService;
++    private final UserCommandService userCommandService;
++
++    public UsersController(UserQueryService userQueryService, UserCommandService userCommandService) {
++        this.userQueryService = userQueryService;
++        this.userCommandService = userCommandService;
++    }
++
++    @GetMapping
++    public ResponseEntity<List<UserResource>> getAllUsers() {
++        var getAllUsersQuery = new GetAllUsersQuery();
++        var users = userQueryService.handle(getAllUsersQuery);
++        var userResources = users.stream().map(UserResourceFromEntityAssembler::toResourceFromEntity).toList();
++        return ResponseEntity.ok(userResources);
++    }
++
++    @GetMapping(value = "/{userId}")
++    public ResponseEntity<UserResource> getUserById(@PathVariable Long userId) {
++        var getUserByIdQuery = new GetUserByIdQuery(userId);
++        var user = userQueryService.handle(getUserByIdQuery);
++        if (user.isEmpty()) return ResponseEntity.notFound().build();
++        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
++        return ResponseEntity.ok(userResource);
++    }
++
++    @PutMapping(value = "/{userId}")
++    public ResponseEntity<UserResource> updateUser(@PathVariable Long userId, @RequestBody UpdateUserResource resource) {
++        var updateUserCommand = UpdateUserCommandFromResourceAssembler.toCommandFromResource(userId, resource);
++        userCommandService.hadle(updateUserCommand);
++
++        var getUserByIdQuery = new GetUserByIdQuery(userId);
++        var user = userQueryService.handle(getUserByIdQuery);
++        if (user.isEmpty()) return ResponseEntity.notFound().build();
++        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
++        return ResponseEntity.ok(userResource);
++    }
++}
+Index: Remodify-microservice-iam/src/test/java/com/innovasoft/remodify/RestyleApplicationTests.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/test/java/com/innovasoft/remodify/RestyleApplicationTests.java b/Remodify-microservice-iam/src/test/java/com/innovasoft/remodify/RestyleApplicationTests.java
+new file mode 100644
+--- /dev/null	(date 1729213123081)
++++ b/Remodify-microservice-iam/src/test/java/com/innovasoft/remodify/RestyleApplicationTests.java	(date 1729213123081)
+@@ -0,0 +1,13 @@
++package com.innovasoft.remodify;
++
++import org.junit.jupiter.api.Test;
++import org.springframework.boot.test.context.SpringBootTest;
++
++@SpringBootTest
++class RestyleApplicationTests {
++
++	@Test
++	void contextLoads() {
++	}
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/valueobjects/Roles.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/valueobjects/Roles.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/valueobjects/Roles.java
+new file mode 100644
+--- /dev/null	(date 1729213123752)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/valueobjects/Roles.java	(date 1729213123752)
+@@ -0,0 +1,7 @@
++package com.innovasoft.remodify.platform.iam.domain.model.valueobjects;
++
++public enum Roles {
++    ROLE_ADMIN,
++    ROLE_REMODELER,
++    ROLE_CONTRACTOR
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/aggregates/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/aggregates/User.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/aggregates/User.java
+new file mode 100644
+--- /dev/null	(date 1729213124047)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/aggregates/User.java	(date 1729213124047)
+@@ -0,0 +1,113 @@
++package com.innovasoft.remodify.platform.iam.domain.model.aggregates;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
++import jakarta.persistence.*;
++import jakarta.validation.constraints.NotBlank;
++import jakarta.validation.constraints.Size;
++import lombok.Getter;
++import lombok.Setter;
++
++import java.util.HashSet;
++import java.util.List;
++import java.util.Set;
++
++
++/**
++ * User aggregate root
++ * This class represents the aggregate root for the User entity.
++ *
++ * @see AuditableAbstractAggregateRoot
++ */
++@Getter
++@Setter
++@Entity
++public class User extends AuditableAbstractAggregateRoot<User> {
++
++    @NotBlank
++    @Size(max = 50)
++    @Column(unique = true)
++    private String username;
++
++    @NotBlank
++    @Size(max = 120)
++    private String password;
++
++    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Eager fetch to load the roles when loading the user
++    @JoinTable(	name = "user_roles",
++            joinColumns = @JoinColumn(name = "user_id"),
++            inverseJoinColumns = @JoinColumn(name = "role_id"))
++    private Set<Role> roles;
++
++    @Getter
++    private String email;
++    @Getter
++    private String firstName;
++    @Getter
++    private String paternalSurname;
++    @Getter
++    private String maternalSurname;
++    @Getter
++    private String description;
++    @Getter
++    private String phone;
++    @Getter
++    private String image;
++
++    public User() {
++        this.roles = new HashSet<>();
++    }
++    public User(String username, String password, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++        this.username = username;
++        this.password = password;
++        this.roles = new HashSet<>();
++        this.email = email;
++        this.firstName = firstName;
++        this.paternalSurname = paternalSurname;
++        this.maternalSurname = maternalSurname;
++        this.description = description;
++        this.phone = phone;
++        this.image = image;
++    }
++
++    public User(String username, String password, List<Role> roles, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++        this(username, password, email, firstName, paternalSurname, maternalSurname, description, phone, image);
++        addRoles(roles);
++    }
++
++    public void updateUserInfo(String email, String description, String phone, String image) {
++        this.email = email;
++        this.description = description;
++        this.phone = phone;
++        this.image = image;
++    }
++
++    /**
++     * Add a role to the user
++     * @param role the role to add
++     * @return the user with the added role
++     */
++    public User addRole(Role role) {
++        if(role == null || role.getId() == null) {
++            this.roles.add(Role.getDefaultRole());
++        } else {
++            this.roles.add(role);
++        }
++        return this;
++    }
++
++    /**
++     * Add a list of roles to the user
++     * @param roles the list of roles to add
++     * @return the user with the added roles
++     */
++    public User addRoles(List<Role> roles) {
++        if (roles == null || roles.isEmpty()) {
++            this.roles.add(Role.getDefaultRole());
++        } else {
++            this.roles.addAll(roles);
++        }
++        return this;
++    }
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UsernamePasswordAuthenticationTokenBuilder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UsernamePasswordAuthenticationTokenBuilder.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UsernamePasswordAuthenticationTokenBuilder.java
+new file mode 100644
+--- /dev/null	(date 1729213124077)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UsernamePasswordAuthenticationTokenBuilder.java	(date 1729213124077)
+@@ -0,0 +1,14 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.model;
++
++import jakarta.servlet.http.HttpServletRequest;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.userdetails.UserDetails;
++import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
++
++public class UsernamePasswordAuthenticationTokenBuilder {
++    public static UsernamePasswordAuthenticationToken build(UserDetails principal, HttpServletRequest request) {
++        var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
++        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
++        return usernamePasswordAuthenticationToken;
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UserDetailsImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UserDetailsImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UserDetailsImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213122852)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/model/UserDetailsImpl.java	(date 1729213122852)
+@@ -0,0 +1,56 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.model;
++
++import com.fasterxml.jackson.annotation.JsonIgnore;
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import lombok.EqualsAndHashCode;
++import lombok.Getter;
++import org.springframework.security.core.GrantedAuthority;
++import org.springframework.security.core.authority.SimpleGrantedAuthority;
++import org.springframework.security.core.userdetails.UserDetails;
++
++import java.util.Collection;
++import java.util.stream.Collectors;
++
++/**
++ * This class is responsible for providing the user details to the Spring Security framework.
++ * It implements the UserDetails interface.
++ */
++@Getter
++@EqualsAndHashCode
++public class UserDetailsImpl implements UserDetails {
++
++    private final String username;
++    @JsonIgnore
++    private final String password;
++    private final boolean accountNonExpired;
++    private final boolean accountNonLocked;
++    private final boolean credentialsNonExpired;
++    private final boolean enabled;
++    private final Collection<? extends GrantedAuthority> authorities;
++
++    public UserDetailsImpl(String username, String password, Collection<? extends GrantedAuthority> authorities) {
++        this.username = username;
++        this.password = password;
++        this.authorities = authorities;
++        this.accountNonExpired = true;
++        this.accountNonLocked = true;
++        this.credentialsNonExpired = true;
++        this.enabled = true;
++    }
++
++    /**
++     * This method is responsible for building the UserDetailsImpl object from the User object.
++     * @param user The user object.
++     * @return The UserDetailsImpl object.
++     */
++    public static UserDetailsImpl build(User user) {
++        var authorities = user.getRoles().stream()
++                .map(role -> role.getName().name())
++                .map(SimpleGrantedAuthority::new)
++                .collect(Collectors.toList());
++        return new UserDetailsImpl(
++                user.getUsername(),
++                user.getPassword(),
++                authorities);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserCommandService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserCommandService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserCommandService.java
+new file mode 100644
+--- /dev/null	(date 1729213123699)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserCommandService.java	(date 1729213123699)
+@@ -0,0 +1,15 @@
++package com.innovasoft.remodify.platform.iam.domain.services;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignInCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignUpCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.UpdateUserCommand;
++import org.apache.commons.lang3.tuple.ImmutablePair;
++
++import java.util.Optional;
++
++public interface UserCommandService {
++    Optional<ImmutablePair<User, String>> handle(SignInCommand command);
++    Optional<User> handle(SignUpCommand command);
++    Optional<User> hadle(UpdateUserCommand command);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/UnauthorizedRequestHandlerEntryPoint.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/UnauthorizedRequestHandlerEntryPoint.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/UnauthorizedRequestHandlerEntryPoint.java
+new file mode 100644
+--- /dev/null	(date 1729213123996)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/UnauthorizedRequestHandlerEntryPoint.java	(date 1729213123996)
+@@ -0,0 +1,40 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.pipeline;
++
++import jakarta.servlet.ServletException;
++import jakarta.servlet.http.HttpServletRequest;
++import jakarta.servlet.http.HttpServletResponse;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.security.core.AuthenticationException;
++import org.springframework.security.web.AuthenticationEntryPoint;
++import org.springframework.stereotype.Component;
++
++import java.io.IOException;
++
++/**
++ * Unauthorized Request Handler.
++ * <p>
++ * This class is responsible for handling unauthorized requests.
++ * It is used by the Spring Security framework to handle unauthorized requests.
++ * It implements the AuthenticationEntryPoint interface.
++ * </p>
++ * @see AuthenticationEntryPoint
++ */
++
++@Component
++public class UnauthorizedRequestHandlerEntryPoint implements AuthenticationEntryPoint {
++
++    private static final Logger LOGGER = LoggerFactory.getLogger(UnauthorizedRequestHandlerEntryPoint.class);
++
++    /**
++     * This method is called by the Spring Security framework when an unauthorized request is detected.
++     * @param request The request that caused the exception
++     * @param response The response that will be sent to the client
++     * @param authenticationException The exception that caused the invocation
++     */
++    @Override
++    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException, ServletException {
++        LOGGER.error("Unauthorized request: {}", authenticationException.getMessage());
++        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized request detected");
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/BearerAuthorizationRequestFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/BearerAuthorizationRequestFilter.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/BearerAuthorizationRequestFilter.java
+new file mode 100644
+--- /dev/null	(date 1729213123720)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/pipeline/BearerAuthorizationRequestFilter.java	(date 1729213123720)
+@@ -0,0 +1,67 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.pipeline;
++
++import com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.model.UsernamePasswordAuthenticationTokenBuilder;
++import com.innovasoft.remodify.platform.iam.infrastructure.tokens.jwt.BearerTokenService;
++import jakarta.servlet.FilterChain;
++import jakarta.servlet.ServletException;
++import jakarta.servlet.http.HttpServletRequest;
++import jakarta.servlet.http.HttpServletResponse;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.lang.NonNull;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.web.filter.OncePerRequestFilter;
++
++import java.io.IOException;
++
++/**
++ * Bearer Authorization Request Filter.
++ * <p>
++ * This class is responsible for filtering requests and setting the user authentication.
++ * It extends the OncePerRequestFilter class.
++ * </p>
++ * @see OncePerRequestFilter
++ */
++public class BearerAuthorizationRequestFilter extends OncePerRequestFilter {
++
++    private static final Logger LOGGER = LoggerFactory.getLogger(BearerAuthorizationRequestFilter.class);
++    private final BearerTokenService tokenService;
++
++
++    @Qualifier("defaultUserDetailsService")
++    private final UserDetailsService userDetailsService;
++
++    public BearerAuthorizationRequestFilter(BearerTokenService tokenService, UserDetailsService userDetailsService) {
++        this.tokenService = tokenService;
++        this.userDetailsService = userDetailsService;
++    }
++
++    /**
++     * This method is responsible for filtering requests and setting the user authentication.
++     * @param request The request object.
++     * @param response The response object.
++     * @param filterChain The filter chain object.
++     */
++    @Override
++    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
++                                    @NonNull FilterChain filterChain)
++            throws ServletException, IOException {
++        try {
++            String token = tokenService.getBearerTokenFrom(request);
++            LOGGER.info("Token: {}", token);
++            if (token != null && tokenService.validateToken(token)) {
++                String username = tokenService.getUsernameFromToken(token);
++                var userDetails = userDetailsService.loadUserByUsername(username);
++                SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationTokenBuilder.build(userDetails, request));
++            } else {
++                LOGGER.info("Token is not valid");
++            }
++
++        } catch (Exception e) {
++            LOGGER.error("Cannot set user authentication: {}", e.getMessage());
++        }
++        filterChain.doFilter(request, response);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleQueryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleQueryService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleQueryService.java
+new file mode 100644
+--- /dev/null	(date 1729213123236)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleQueryService.java	(date 1729213123236)
+@@ -0,0 +1,13 @@
++package com.innovasoft.remodify.platform.iam.domain.services;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllRolesQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetRoleByNameQuery;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface RoleQueryService {
++    List<Role> handle(GetAllRolesQuery query);
++    Optional<Role> handle(GetRoleByNameQuery query);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/services/UserDetailsServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/services/UserDetailsServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/services/UserDetailsServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213122694)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/services/UserDetailsServiceImpl.java	(date 1729213122694)
+@@ -0,0 +1,27 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.services;
++
++import com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.model.UserDetailsImpl;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
++import org.springframework.security.core.userdetails.UserDetails;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.security.core.userdetails.UsernameNotFoundException;
++import org.springframework.stereotype.Service;
++
++@Service(value = "defaultUserDetailsService")
++public class UserDetailsServiceImpl implements UserDetailsService {
++
++    private final UserRepository userRepository;
++
++    public UserDetailsServiceImpl(UserRepository userRepository) {
++        this.userRepository = userRepository;
++    }
++
++    @Override
++    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
++        var user = userRepository.findByUsername(username)
++                .orElseThrow(() -> new UsernameNotFoundException("User not found with username:" + username));
++
++        return UserDetailsImpl.build(user);
++
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/configuration/WebSecurityConfiguration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/configuration/WebSecurityConfiguration.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/configuration/WebSecurityConfiguration.java
+new file mode 100644
+--- /dev/null	(date 1729213123257)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/authorization/sfs/configuration/WebSecurityConfiguration.java	(date 1729213123257)
+@@ -0,0 +1,90 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.configuration;
++
++import com.innovasoft.remodify.platform.iam.infrastructure.authorization.sfs.pipeline.BearerAuthorizationRequestFilter;
++import com.innovasoft.remodify.platform.iam.infrastructure.hashing.bcrypt.BCryptHashingService;
++import com.innovasoft.remodify.platform.iam.infrastructure.tokens.jwt.BearerTokenService;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.security.authentication.AuthenticationManager;
++import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
++import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
++import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
++import org.springframework.security.config.annotation.web.builders.HttpSecurity;
++import org.springframework.security.config.http.SessionCreationPolicy;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.security.crypto.password.PasswordEncoder;
++import org.springframework.security.web.AuthenticationEntryPoint;
++import org.springframework.security.web.SecurityFilterChain;
++import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
++import org.springframework.web.cors.CorsConfiguration;
++
++import java.util.List;
++
++@EnableMethodSecurity
++@Configuration
++public class WebSecurityConfiguration {
++
++    private final UserDetailsService userDetailsService;
++    private final BearerTokenService tokenService;
++    private final BCryptHashingService hashingService;
++    private final AuthenticationEntryPoint unauthorizedRequestHandler;
++
++    public WebSecurityConfiguration(@Qualifier("defaultUserDetailsService") UserDetailsService userDetailsService, BearerTokenService tokenService, BCryptHashingService hashingService, AuthenticationEntryPoint authenticationEntryPoint) {
++        this.userDetailsService = userDetailsService;
++        this.tokenService = tokenService;
++        this.hashingService = hashingService;
++        this.unauthorizedRequestHandler = authenticationEntryPoint;
++    }
++
++    @Bean
++    public BearerAuthorizationRequestFilter authorizationRequestFilter() {
++        return new BearerAuthorizationRequestFilter(tokenService, userDetailsService);
++    }
++
++    @Bean
++    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
++        return authenticationConfiguration.getAuthenticationManager();
++    }
++
++    @Bean
++    public DaoAuthenticationProvider authenticationProvider() {
++        var authenticationProvider = new DaoAuthenticationProvider();
++        authenticationProvider.setUserDetailsService(userDetailsService);
++        authenticationProvider.setPasswordEncoder(hashingService);
++        return authenticationProvider;
++    }
++
++    @Bean
++    public PasswordEncoder passwordEncoder() {
++        return hashingService;
++    }
++
++    @Bean
++    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
++        // CORS default configuration
++        http.cors(configurer -> configurer.configurationSource(request -> {
++            var cors = new CorsConfiguration();
++            cors.setAllowedOrigins(List.of("*"));
++            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
++            cors.setAllowedHeaders(List.of("*"));
++            return cors;
++        }));
++
++        http.csrf(csrfConfigurer -> csrfConfigurer.disable())
++                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedRequestHandler))
++                .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
++                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
++                        .requestMatchers(
++                                "/api/v1/authentication/**",
++                                "/v3/api-docs/**",
++                                "/swagger-ui.html",
++                                "/swagger-ui/**",
++                                "/swagger-resources/**",
++                                "/webjars/**").permitAll()
++                        .anyRequest().authenticated());
++        http.authenticationProvider(authenticationProvider());
++        http.addFilterBefore(authorizationRequestFilter(), UsernamePasswordAuthenticationFilter.class);
++        return http.build();
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllUsersQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllUsersQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllUsersQuery.java
+new file mode 100644
+--- /dev/null	(date 1729213123337)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllUsersQuery.java	(date 1729213123337)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.queries;
++
++public record GetAllUsersQuery() {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/services/HashingServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/services/HashingServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/services/HashingServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213123344)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/services/HashingServiceImpl.java	(date 1729213123344)
+@@ -0,0 +1,25 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.hashing.bcrypt.services;
++
++import com.innovasoft.remodify.platform.iam.infrastructure.hashing.bcrypt.BCryptHashingService;
++import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
++import org.springframework.stereotype.Service;
++
++@Service
++public class HashingServiceImpl implements BCryptHashingService {
++
++    private final BCryptPasswordEncoder passwordEncoder;
++
++    HashingServiceImpl() {
++        this.passwordEncoder = new BCryptPasswordEncoder();
++    }
++
++    @Override
++    public String encode(CharSequence rawPassword) {
++        return passwordEncoder.encode(rawPassword);
++    }
++
++    @Override
++    public boolean matches(CharSequence rawPassword, String encodedPassword) {
++        return passwordEncoder.matches(rawPassword, encodedPassword);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/BCryptHashingService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/BCryptHashingService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/BCryptHashingService.java
+new file mode 100644
+--- /dev/null	(date 1729213123713)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/hashing/bcrypt/BCryptHashingService.java	(date 1729213123713)
+@@ -0,0 +1,7 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.hashing.bcrypt;
++
++import com.innovasoft.remodify.platform.iam.application.internal.outboundservices.hashing.HashingService;
++import org.springframework.security.crypto.password.PasswordEncoder;
++
++public interface BCryptHashingService extends HashingService, PasswordEncoder {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/AuthenticationController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/AuthenticationController.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/AuthenticationController.java
+new file mode 100644
+--- /dev/null	(date 1729213124001)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/AuthenticationController.java	(date 1729213124001)
+@@ -0,0 +1,52 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest;
++
++import com.innovasoft.remodify.platform.iam.domain.services.UserCommandService;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.AuthenticatedUserResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.SignInResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.SignUpResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.UserResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.AuthenticatedUserResourceFromEntityAssembler;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.SignInCommandFromResourceAssembler;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.SignUpCommandFromResourceAssembler;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import org.springframework.http.HttpStatus;
++import org.springframework.http.MediaType;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++@RestController
++@RequestMapping(value = "/api/v1/authentication", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
++@Tag(name = "Authentication", description = "Authentication endpoints.")
++public class AuthenticationController {
++
++    private final UserCommandService userCommandService;
++
++    public AuthenticationController(UserCommandService userCommandService) {
++        this.userCommandService = userCommandService;
++    }
++
++    @PostMapping("/sign-in")
++    public ResponseEntity<AuthenticatedUserResource> SignIn(@RequestBody SignInResource signInResource) {
++        var signInCommand = SignInCommandFromResourceAssembler.toCommandFromResource(signInResource);
++        var authenticatedUser = userCommandService.handle(signInCommand);
++        if (authenticatedUser.isEmpty()) return ResponseEntity.notFound().build();
++
++        var authenticatedUserResource = AuthenticatedUserResourceFromEntityAssembler.toResourceFromEntity(authenticatedUser.get().getLeft(), authenticatedUser.get().getRight());
++        return ResponseEntity.ok(authenticatedUserResource);
++    }
++
++    @PostMapping("/sign-up")
++    public ResponseEntity<UserResource> singUp(@RequestBody SignUpResource signUpResource) {
++        var signUpCommand = SignUpCommandFromResourceAssembler.toCommandFromResource(signUpResource);
++        var user = userCommandService.handle(signUpCommand);
++        if (user.isEmpty()) return ResponseEntity.badRequest().build();
++
++        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
++        return new ResponseEntity<>(userResource, HttpStatus.CREATED);
++    }
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/UserRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/UserRepository.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/UserRepository.java
+new file mode 100644
+--- /dev/null	(date 1729213123442)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/UserRepository.java	(date 1729213123442)
+@@ -0,0 +1,13 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++import java.util.Optional;
++
++@Repository
++public interface UserRepository extends JpaRepository<User, Long> {
++    Optional<User> findByUsername(String username);
++    boolean existsByUsername(String username);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/entities/Role.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/entities/Role.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/entities/Role.java
+new file mode 100644
+--- /dev/null	(date 1729213123825)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/entities/Role.java	(date 1729213123825)
+@@ -0,0 +1,81 @@
++package com.innovasoft.remodify.platform.iam.domain.model.entities;
++
++import com.innovasoft.remodify.platform.iam.domain.model.valueobjects.Roles;
++import jakarta.persistence.*;
++import lombok.*;
++
++import java.util.List;
++
++/**
++ * Role entity
++ * <p>
++ *     This entity represents the role of a user in the system.
++ *     It is used to define the permissions of a user.
++ * </p>
++ */
++@Entity
++@Data
++@NoArgsConstructor
++@AllArgsConstructor
++@With
++public class Role {
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @Enumerated(EnumType.STRING)
++    @Column(length = 20)
++    private Roles name;
++
++    public Role(Roles name) {
++        this.name = name;
++    }
++
++    /**
++     * Get the name of the role as a string
++     * @return the name of the role as a string
++     */
++    public String getStringName() {
++        return name.name();
++    }
++
++    /**
++     * Get the default role
++     * @return the default role
++     */
++    public static Role getDefaultRole() {
++        return new Role(Roles.ROLE_CONTRACTOR);
++    }
++
++    /**
++     * Get the role from its name
++     * @param name the name of the role
++     * @return the role
++     */
++    public static Role toRoleFromName(String name) {
++        if (name == null || name.isBlank()) {
++            return getDefaultRole();
++        }
++        try {
++            return new Role(Roles.valueOf(name));
++        } catch (IllegalArgumentException e) {
++            throw new IllegalArgumentException("Invalid role name: " + name);
++        }
++    }
++
++    /**
++     * Validate the role set
++     * <p>
++     *     This method validates the role set and returns the default role if the set is empty.
++     * </p>
++     * @param roles the role set
++     * @return the role set
++     */
++    public static List<Role> validateRoleSet(List<Role> roles) {
++        if (roles == null || roles.isEmpty()) {
++            return List.of(getDefaultRole());
++        }
++        return roles;
++    }
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/RoleRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/RoleRepository.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/RoleRepository.java
+new file mode 100644
+--- /dev/null	(date 1729213123609)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/persistence/jpa/repositories/RoleRepository.java	(date 1729213123609)
+@@ -0,0 +1,14 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.domain.model.valueobjects.Roles;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++import java.util.Optional;
++
++@Repository
++public interface RoleRepository extends JpaRepository<Role, Long> {
++    Optional<Role> findByName(Roles name);
++    boolean existsByName(Roles name);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/services/TokenServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/services/TokenServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/services/TokenServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213123130)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/services/TokenServiceImpl.java	(date 1729213123130)
+@@ -0,0 +1,242 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.tokens.jwt.services;
++
++import com.innovasoft.remodify.platform.iam.infrastructure.tokens.jwt.BearerTokenService;
++import io.jsonwebtoken.*;
++import io.jsonwebtoken.security.Keys;
++import io.jsonwebtoken.security.SignatureException;
++import jakarta.servlet.http.HttpServletRequest;
++import org.apache.commons.lang3.time.DateUtils;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.security.core.Authentication;
++import org.springframework.stereotype.Service;
++import org.springframework.util.StringUtils;
++
++import javax.crypto.SecretKey;
++import java.nio.charset.StandardCharsets;
++import java.util.Date;
++import java.util.function.Function;
++
++/**
++ * The TokenServiceImpl class provides methods for generating, validating, and extracting JWT tokens.
++ */
++@Service
++public class TokenServiceImpl implements BearerTokenService {
++    private final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl.class);
++
++    private static final String AUTHORIZATION_PARAMETER_NAME = "Authorization";
++    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
++    private static final int TOKEN_BEGIN_INDEX = 7;
++
++    @Value("${authorization.jwt.secret}")
++    private String secret;
++
++    @Value("${authorization.jwt.expiration.days}")
++    private int expirationDays;
++
++    /**
++     * Generates a JWT token using the provided authentication object.
++     * Genera un token JWT utilizando el objeto de autenticación proporcionado.
++     *
++     * @param authentication the authentication object containing user details
++     *                       el objeto de autenticación que contiene detalles del usuario
++     * @return a JWT token as a String
++     *         un token JWT como una cadena
++     * @see Authentication
++     */
++    @Override
++    public String generateToken(Authentication authentication) {
++        return buildTokenWithDefaultParameters(authentication.getName());
++    }
++
++    /**
++     * Generates a JWT token for the given username.
++     * Genera un token JWT para el nombre de usuario proporcionado.
++     *
++     * @param username the username for which the token is to be generated
++     *                 el nombre de usuario para el cual se generará el token
++     * @return a JWT token as a String
++     *         un token JWT como una cadena
++     */
++    public String generateToken(String username) {
++        return buildTokenWithDefaultParameters(username);
++    }
++
++    /**
++     * Builds a JWT token with the default expiration time using the provided username.
++     * Construye un token JWT con el tiempo de expiración predeterminado usando el nombre de usuario proporcionado.
++     *
++     * @param username the username to be included in the token
++     *                 el nombre de usuario que se incluirá en el token
++     * @return a JWT token as a String
++     *         un token JWT como una cadena
++     */
++    private String buildTokenWithDefaultParameters(String username) {
++        var issuedAt = new Date();
++        var expiration = DateUtils.addDays(issuedAt, expirationDays);
++        var key = getSigningKey();
++        return Jwts.builder()
++                .setSubject(username)
++                .setIssuedAt(issuedAt)
++                .setExpiration(expiration)
++                .signWith(key)
++                .compact();
++    }
++
++    /**
++     * Extracts the username from the given JWT token.
++     * Extrae el nombre de usuario del token JWT proporcionado.
++     *
++     * @param token the JWT token from which to extract the username
++     *              el token JWT del cual extraer el nombre de usuario
++     * @return the username as a String
++     *         el nombre de usuario como una cadena
++     */
++    @Override
++    public String getUsernameFromToken(String token) {
++        return extractClaim(token, Claims::getSubject);
++    }
++
++    /**
++     * Validates the given JWT token.
++     * Valida el token JWT proporcionado.
++     *
++     * @param token the JWT token to be validated
++     *              el token JWT que se va a validar
++     * @return true if the token is valid, false otherwise
++     *         verdadero si el token es válido, falso en caso contrario
++     */
++    @Override
++    public boolean validateToken(String token) {
++        try {
++            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
++            LOGGER.info("Token is valid");
++            return true;
++        } catch (SignatureException e) {
++            LOGGER.error("Invalid JWT signature: {}", e.getMessage());
++        } catch (MalformedJwtException e) {
++            LOGGER.error("Invalid JWT token: {}", e.getMessage());
++        } catch (ExpiredJwtException e) {
++            LOGGER.error("Expired JWT token: {}", e.getMessage());
++        } catch (UnsupportedJwtException e) {
++            LOGGER.error("Unsupported JWT token: {}", e.getMessage());
++        } catch (IllegalArgumentException e) {
++            LOGGER.error("JWT claims string is empty: {}", e.getMessage());
++        }
++        return false;
++    }
++
++    /**
++     * Extracts a specific claim from the given JWT token.
++     * Extrae un reclamo específico del token JWT proporcionado.
++     *
++     * @param <T> the type of the claim
++     *            el tipo del reclamo
++     * @param token the JWT token from which to extract the claim
++     *              el token JWT del cual extraer el reclamo
++     * @param claimsResolver a function to extract the claim from the Claims object
++     *                       una función para extraer el reclamo del objeto Claims
++     * @return the extracted claim
++     *         el reclamo extraído
++     */
++    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
++        final Claims claims = extractAllClaims(token);
++        return claimsResolver.apply(claims);
++    }
++
++    /**
++     * Extracts all claims from the given JWT token.
++     * Extrae todos los reclamos del token JWT proporcionado.
++     *
++     * @param token the JWT token from which to extract the claims
++     *              el token JWT del cual extraer los reclamos
++     * @return the Claims object containing all claims
++     *         el objeto Claims que contiene todos los reclamos
++     */
++    private Claims extractAllClaims(String token) {
++        return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
++    }
++
++    /**
++     * Retrieves the signing key from the application properties.
++     * Recupera la clave de firma de las propiedades de la aplicación.
++     *
++     * @return the SecretKey used for signing the JWT token
++     *         la clave secreta utilizada para firmar el token JWT
++     */
++    private SecretKey getSigningKey() {
++        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
++        return Keys.hmacShaKeyFor(keyBytes);
++    }
++
++    /**
++     * Checks if the token is present in the authorization parameter.
++     * Verifica si el token está presente en el parámetro de autorización.
++     *
++     * @param authorizationParameter the authorization parameter string
++     *                               la cadena del parámetro de autorización
++     * @return true if the token is present, false otherwise
++     *         verdadero si el token está presente, falso en caso contrario
++     */
++    private boolean isTokenPresentIn(String authorizationParameter) {
++        return StringUtils.hasText(authorizationParameter);
++    }
++
++    /**
++     * Checks if the authorization parameter contains a Bearer token.
++     * Verifica si el parámetro de autorización contiene un token Bearer.
++     *
++     * @param authorizationParameter the authorization parameter string
++     *                               la cadena del parámetro de autorización
++     * @return true if the parameter starts with "Bearer ", false otherwise
++     *         verdadero si el parámetro comienza con "Bearer ", falso en caso contrario
++     */
++    private boolean isBearerTokenIn(String authorizationParameter) {
++        return authorizationParameter.startsWith(BEARER_TOKEN_PREFIX);
++    }
++
++    /**
++     * Extracts the token from the authorization header parameter.
++     * Extrae el token del parámetro del encabezado de autorización.
++     *
++     * @param authorizationHeaderParameter the authorization header string
++     *                                     la cadena del encabezado de autorización
++     * @return the JWT token as a String
++     *         el token JWT como una cadena
++     */
++    private String extractTokenFrom(String authorizationHeaderParameter) {
++        return authorizationHeaderParameter.substring(TOKEN_BEGIN_INDEX);
++    }
++
++    /**
++     * Retrieves the authorization parameter from the HTTP request.
++     * Recupera el parámetro de autorización de la solicitud HTTP.
++     *
++     * @param request the HttpServletRequest object
++     *                el objeto HttpServletRequest
++     * @return the authorization parameter as a String
++     *         el parámetro de autorización como una cadena
++     */
++    private String  getAuthorizationParameterFrom(HttpServletRequest request) {
++        return request.getHeader(AUTHORIZATION_PARAMETER_NAME);
++    }
++
++    /**
++     * Extracts the Bearer token from the HTTP request.
++     * Extrae el token Bearer de la solicitud HTTP.
++     *
++     * @param request the HttpServletRequest object
++     *                el objeto HttpServletRequest
++     * @return the JWT token as a String, or null if not present
++     *         el token JWT como una cadena, o null si no está
++     */
++    @Override
++    public String getBearerTokenFrom(HttpServletRequest request) {
++        String parameter = getAuthorizationParameterFrom(request);
++        if (isTokenPresentIn(parameter) && isBearerTokenIn(parameter)) {
++            return extractTokenFrom(parameter);
++        }
++        return null;
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/BearerTokenService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/BearerTokenService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/BearerTokenService.java
+new file mode 100644
+--- /dev/null	(date 1729213123182)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/infrastructure/tokens/jwt/BearerTokenService.java	(date 1729213123182)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.iam.infrastructure.tokens.jwt;
++
++import com.innovasoft.remodify.platform.iam.application.internal.outboundservices.tokens.TokenService;
++import jakarta.servlet.http.HttpServletRequest;
++import org.springframework.security.core.Authentication;
++
++public interface BearerTokenService extends TokenService {
++    String getBearerTokenFrom(HttpServletRequest request);
++    String generateToken(Authentication authentication);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UpdateUserCommandFromResourceAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UpdateUserCommandFromResourceAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UpdateUserCommandFromResourceAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213123016)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UpdateUserCommandFromResourceAssembler.java	(date 1729213123016)
+@@ -0,0 +1,15 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.UpdateUserCommand;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.UpdateUserResource;
++
++public class UpdateUserCommandFromResourceAssembler {
++    public static UpdateUserCommand toCommandFromResource(Long userId, UpdateUserResource resource){
++        return new UpdateUserCommand(
++            userId,
++            resource.email(),
++            resource.description(),
++            resource.phone(),
++            resource.image());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/RoleQueryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/RoleQueryServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/RoleQueryServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213123298)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/RoleQueryServiceImpl.java	(date 1729213123298)
+@@ -0,0 +1,30 @@
++package com.innovasoft.remodify.platform.iam.application.internal.queryservices;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllRolesQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetRoleByNameQuery;
++import com.innovasoft.remodify.platform.iam.domain.services.RoleQueryService;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++import java.util.Optional;
++
++@Service
++public class RoleQueryServiceImpl implements RoleQueryService {
++    private final RoleRepository roleRepository;
++
++    public RoleQueryServiceImpl(RoleRepository roleRepository) {
++        this.roleRepository = roleRepository;
++    }
++
++    @Override
++    public List<Role> handle(GetAllRolesQuery query) {
++        return roleRepository.findAll();
++    }
++
++    @Override
++    public Optional<Role> handle(GetRoleByNameQuery query) {
++        return roleRepository.findByName(query.name());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/UserQueryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/UserQueryServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/UserQueryServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213123068)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/queryservices/UserQueryServiceImpl.java	(date 1729213123068)
+@@ -0,0 +1,36 @@
++package com.innovasoft.remodify.platform.iam.application.internal.queryservices;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllUsersQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByIdQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByUsernameQuery;
++import com.innovasoft.remodify.platform.iam.domain.services.UserQueryService;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++import java.util.Optional;
++
++@Service
++public class UserQueryServiceImpl implements UserQueryService {
++    private final UserRepository userRepository;
++
++    public UserQueryServiceImpl(UserRepository userRepository) {
++        this.userRepository = userRepository;
++    }
++
++    @Override
++    public List<User> handle(GetAllUsersQuery query) {
++        return userRepository.findAll();
++    }
++
++    @Override
++    public Optional<User> handle(GetUserByIdQuery query) {
++        return userRepository.findById(query.userId());
++    }
++
++    @Override
++    public Optional<User> handle(GetUserByUsernameQuery query) {
++        return userRepository.findByUsername(query.username());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/UserCommandServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/UserCommandServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/UserCommandServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213124072)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/UserCommandServiceImpl.java	(date 1729213124072)
+@@ -0,0 +1,63 @@
++package com.innovasoft.remodify.platform.iam.application.internal.commandservices;
++
++import com.innovasoft.remodify.platform.iam.application.internal.outboundservices.hashing.HashingService;
++import com.innovasoft.remodify.platform.iam.application.internal.outboundservices.tokens.TokenService;
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignInCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignUpCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.commands.UpdateUserCommand;
++import com.innovasoft.remodify.platform.iam.domain.services.UserCommandService;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
++import org.apache.commons.lang3.tuple.ImmutablePair;
++import org.springframework.stereotype.Service;
++
++import java.util.Optional;
++
++@Service
++public class UserCommandServiceImpl implements UserCommandService{
++
++    private final UserRepository userRepository;
++    private final HashingService hashingService;
++    private final TokenService tokenService;
++    private final RoleRepository roleRepository;
++
++    public UserCommandServiceImpl(UserRepository userRepository, HashingService hashingService, TokenService tokenService, RoleRepository roleRepository) {
++        this.userRepository = userRepository;
++        this.hashingService = hashingService;
++        this.tokenService = tokenService;
++        this.roleRepository = roleRepository;
++    }
++
++    @Override
++    public Optional<User> handle(SignUpCommand command) {
++        if(userRepository.existsByUsername(command.username()))
++            throw new RuntimeException("Username already exists");
++
++        var roles = command.roles().stream().map(role -> roleRepository.findByName(role.getName())
++                .orElseThrow(() -> new RuntimeException("Role not found"))).toList();
++        var user = new User(command.username(), hashingService.encode(command.password()), roles, command.email(), command.firstName(), command.paternalSurname(), command.maternalSurname(), command.description(), command.phone(), command.image());
++        userRepository.save(user);
++        return userRepository.findByUsername(command.username());
++    }
++
++    @Override
++    public Optional<User> hadle(UpdateUserCommand command) {
++        var user = userRepository.findById(command.id())
++                .orElseThrow(() -> new RuntimeException("User not found"));
++        user.updateUserInfo(command.email(), command.description(), command.phone(), command.image());
++
++        userRepository.save(user);
++        return userRepository.findById(command.id());
++    }
++
++    @Override
++    public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
++        var user = userRepository.findByUsername(command.username())
++                .orElseThrow(() -> new RuntimeException("User not found"));
++        if(!hashingService.matches(command.password(), user.getPassword()))
++            throw new RuntimeException("Invalid password");
++        var token = tokenService.generateToken(user.getUsername());
++        return Optional.of(new ImmutablePair<>(user, token));
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/RoleCommandServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/RoleCommandServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/RoleCommandServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729213123324)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/commandservices/RoleCommandServiceImpl.java	(date 1729213123324)
+@@ -0,0 +1,28 @@
++package com.innovasoft.remodify.platform.iam.application.internal.commandservices;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SeedRolesCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.domain.model.valueobjects.Roles;
++import com.innovasoft.remodify.platform.iam.domain.services.RoleCommandService;
++import com.innovasoft.remodify.platform.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.Arrays;
++
++@Service
++public class RoleCommandServiceImpl implements RoleCommandService {
++    private final RoleRepository roleRepository;
++
++    public RoleCommandServiceImpl(RoleRepository roleRepository) {
++        this.roleRepository = roleRepository;
++    }
++
++    @Override
++    public void handle(SeedRolesCommand command) {
++        Arrays.stream(Roles.values()).forEach(role -> {
++            if (!roleRepository.existsByName(role)) {
++                roleRepository.save(new Role(Roles.valueOf(role.name())));
++            }
++        });
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/tokens/TokenService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/tokens/TokenService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/tokens/TokenService.java
+new file mode 100644
+--- /dev/null	(date 1729213123833)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/tokens/TokenService.java	(date 1729213123833)
+@@ -0,0 +1,7 @@
++package com.innovasoft.remodify.platform.iam.application.internal.outboundservices.tokens;
++
++public interface TokenService {
++    String generateToken(String username);
++    String getUsernameFromToken(String token);
++    boolean validateToken(String token);
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/hashing/HashingService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/hashing/HashingService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/hashing/HashingService.java
+new file mode 100644
+--- /dev/null	(date 1729213123350)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/application/internal/outboundservices/hashing/HashingService.java	(date 1729213123350)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.iam.application.internal.outboundservices.hashing;
++
++public interface HashingService {
++    String encode(CharSequence rawPassword);
++    boolean matches(CharSequence rawPassword, String encodedPassword);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByUsernameQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByUsernameQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByUsernameQuery.java
+new file mode 100644
+--- /dev/null	(date 1729213123391)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByUsernameQuery.java	(date 1729213123391)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.queries;
++
++public record GetUserByUsernameQuery(String username) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UpdateUserResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UpdateUserResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UpdateUserResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123157)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UpdateUserResource.java	(date 1729213123157)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++public record UpdateUserResource(String email, String description, String phone, String image) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/AuthenticatedUserResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/AuthenticatedUserResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/AuthenticatedUserResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123430)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/AuthenticatedUserResource.java	(date 1729213123430)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++public record AuthenticatedUserResource(Long id, String username, String token) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/RoleResourceFromEntityAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/RoleResourceFromEntityAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/RoleResourceFromEntityAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213123209)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/RoleResourceFromEntityAssembler.java	(date 1729213123209)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.RoleResource;
++
++public class RoleResourceFromEntityAssembler {
++    public static RoleResource toResourceFromEntity(Role entity) {
++        return new RoleResource(entity.getId(), entity.getStringName());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UserResourceFromEntityAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UserResourceFromEntityAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UserResourceFromEntityAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213122907)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/UserResourceFromEntityAssembler.java	(date 1729213122907)
+@@ -0,0 +1,12 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.UserResource;
++
++public class UserResourceFromEntityAssembler {
++    public static UserResource toResourceFromEntity(User entity) {
++        var roles = entity.getRoles().stream().map(Role::getStringName).toList();
++        return new UserResource(entity.getId(), entity.getUsername(), roles, entity.getEmail(), entity.getFirstName(), entity.getPaternalSurname(), entity.getMaternalSurname(), entity.getDescription(), entity.getPhone(), entity.getImage());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignUpCommandFromResourceAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignUpCommandFromResourceAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignUpCommandFromResourceAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213123728)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignUpCommandFromResourceAssembler.java	(date 1729213123728)
+@@ -0,0 +1,18 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignUpCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.SignUpResource;
++
++import java.util.ArrayList;
++
++public class SignUpCommandFromResourceAssembler {
++    public static SignUpCommand toCommandFromResource(SignUpResource resource) {
++        var roles = resource.roles() != null
++                ? resource.roles().stream().map(name -> Role.toRoleFromName(name)).toList()
++                : new ArrayList<Role>();
++        System.out.print("Roles:");
++        System.out.println(roles.getFirst().getName().name());
++        return new SignUpCommand(resource.username(), resource.password(), roles, resource.email(), resource.firstName(), resource.paternalSurname(), resource.maternalSurname(), resource.description(), resource.phone(), resource.image());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/AuthenticatedUserResourceFromEntityAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/AuthenticatedUserResourceFromEntityAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/AuthenticatedUserResourceFromEntityAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213123538)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/AuthenticatedUserResourceFromEntityAssembler.java	(date 1729213123538)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.AuthenticatedUserResource;
++
++public class AuthenticatedUserResourceFromEntityAssembler {
++    public static AuthenticatedUserResource toResourceFromEntity(User user, String token) {
++        return new AuthenticatedUserResource(user.getId(), user.getUsername(), token);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignInCommandFromResourceAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignInCommandFromResourceAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignInCommandFromResourceAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729213123364)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/transform/SignInCommandFromResourceAssembler.java	(date 1729213123364)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignInCommand;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.SignInResource;
++
++public class SignInCommandFromResourceAssembler {
++    public static SignInCommand toCommandFromResource(SignInResource resource) {
++        return new SignInCommand(resource.username(), resource.password());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/RoleResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/RoleResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/RoleResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123848)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/RoleResource.java	(date 1729213123848)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++public record RoleResource(Long id, String name) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllRolesQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllRolesQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllRolesQuery.java
+new file mode 100644
+--- /dev/null	(date 1729213122834)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetAllRolesQuery.java	(date 1729213122834)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.queries;
++
++public record GetAllRolesQuery() {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/aggregates/Profile.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/aggregates/Profile.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/aggregates/Profile.java
+new file mode 100644
+--- /dev/null	(date 1729214460267)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/aggregates/Profile.java	(date 1729214460267)
+@@ -0,0 +1,64 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.aggregates;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.EmailAddress;
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.PersonName;
++import com.innovasoft.remodify.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
++import jakarta.persistence.*;
++import lombok.Getter;
++import org.springframework.data.annotation.CreatedDate;
++import org.springframework.data.annotation.LastModifiedDate;
++import org.springframework.data.jpa.domain.support.AuditingEntityListener;
++
++import java.util.Date;
++
++@EntityListeners(AuditingEntityListener.class)
++@Entity
++public class Profile extends AuditableAbstractAggregateRoot<Profile> {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    @Getter
++    private Long id;
++
++    @Embedded
++    private EmailAddress email;
++
++    @Getter
++    private String password;
++
++    @Getter
++    private String type;
++
++    @Embedded
++    private PersonName name;
++
++    @CreatedDate
++    private Date createdAt;
++
++    @LastModifiedDate
++    private Date updatedAt;
++
++    public Profile(String email, String password, String type, String firstName, String paternalSurname, String maternalSurname) {
++        this.email = new EmailAddress(email);
++        this.password = password;
++        this.type = type;
++        this.name = new PersonName(firstName, paternalSurname, maternalSurname);
++    }
++
++    public Profile() {
++
++    }
++
++    public void updateName(String firstName, String paternalSurname, String maternalSurname) {
++        this.name = new PersonName(firstName, paternalSurname, maternalSurname);
++    }
++
++    public String getFullName() {
++        return this.name.getFullName();
++    }
++
++    public String getEmailAddress() {
++        return this.email.address();
++    }
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UserResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UserResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UserResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123193)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/UserResource.java	(date 1729213123193)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++import java.util.List;
++
++public record UserResource(Long id, String username, List<String> roles, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/entities/AuditableModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/entities/AuditableModel.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/entities/AuditableModel.java
+new file mode 100644
+--- /dev/null	(date 1729213123424)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/domain/model/entities/AuditableModel.java	(date 1729213123424)
+@@ -0,0 +1,26 @@
++package com.innovasoft.remodify.platform.shared.domain.model.entities;
++
++import jakarta.persistence.Column;
++import jakarta.persistence.EntityListeners;
++import jakarta.persistence.MappedSuperclass;
++import lombok.Getter;
++import org.springframework.data.annotation.CreatedDate;
++import org.springframework.data.annotation.LastModifiedDate;
++import org.springframework.data.jpa.domain.support.AuditingEntityListener;
++
++import java.util.Date;
++
++@EntityListeners(AuditingEntityListener.class)
++@MappedSuperclass
++public abstract class AuditableModel {
++
++    @Getter
++    @CreatedDate
++    @Column(nullable = false, updatable = false)
++    private Date createdAt;
++
++    @Getter
++    @LastModifiedDate
++    @Column(nullable = false)
++    private Date updatedAt;
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/commands/CreateProfileCommand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/commands/CreateProfileCommand.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/commands/CreateProfileCommand.java
+new file mode 100644
+--- /dev/null	(date 1729214459813)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/commands/CreateProfileCommand.java	(date 1729214459813)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.commands;
++
++public record CreateProfileCommand(
++        String email,
++        String password,
++        String typeUser,
++        String firstName,
++        String paternalSurname,
++        String maternalSurname
++) {}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByEmailQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByEmailQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByEmailQuery.java
+new file mode 100644
+--- /dev/null	(date 1729214459723)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByEmailQuery.java	(date 1729214459723)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.queries;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.EmailAddress;
++
++public record GetProfileByEmailQuery(EmailAddress emailAddress) {
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByIdQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByIdQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByIdQuery.java
+new file mode 100644
+--- /dev/null	(date 1729214460247)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetProfileByIdQuery.java	(date 1729214460247)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.queries;
++
++public record GetProfileByIdQuery(Long profileId) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetAllProfilesQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetAllProfilesQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetAllProfilesQuery.java
+new file mode 100644
+--- /dev/null	(date 1729214459881)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/queries/GetAllProfilesQuery.java	(date 1729214459881)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.queries;
++
++public record GetAllProfilesQuery() {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/acl/ProfilesContextFacade.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/acl/ProfilesContextFacade.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/acl/ProfilesContextFacade.java
+new file mode 100644
+--- /dev/null	(date 1729214459945)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/acl/ProfilesContextFacade.java	(date 1729214459945)
+@@ -0,0 +1,31 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.acl;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.commands.CreateProfileCommand;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByEmailQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.EmailAddress;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileCommandService;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileQueryService;
++import org.springframework.stereotype.Service;
++
++@Service
++public class ProfilesContextFacade {
++    private final ProfileCommandService profileCommandService;
++    private final ProfileQueryService profileQueryService;
++
++    public ProfilesContextFacade(ProfileCommandService profileCommandService, ProfileQueryService profileQueryService) {
++        this.profileCommandService = profileCommandService;
++        this.profileQueryService = profileQueryService;
++    }
++
++    public Long createProfile(String email, String password, String typeUser, String firstName, String paternalSurname, String maternalSurname) {
++        var createProfileCommand = new CreateProfileCommand(email,password, typeUser, firstName, paternalSurname, maternalSurname);
++        return profileCommandService.handle(createProfileCommand);
++    }
++
++    public Long getProfileIdByEmail(String email) {
++        var getProfileByEmailQuery = new GetProfileByEmailQuery(new EmailAddress(email));
++        var profile = profileQueryService.handle(getProfileByEmailQuery);
++        if (profile.isEmpty()) return 0L;
++        return profile.get().getId();
++    }
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/acl/IamContextFacade.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/acl/IamContextFacade.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/acl/IamContextFacade.java
+new file mode 100644
+--- /dev/null	(date 1729213123656)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/acl/IamContextFacade.java	(date 1729213123656)
+@@ -0,0 +1,84 @@
++package com.innovasoft.remodify.platform.iam.interfaces.acl;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SignUpCommand;
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByIdQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByUsernameQuery;
++import com.innovasoft.remodify.platform.iam.domain.services.UserCommandService;
++import com.innovasoft.remodify.platform.iam.domain.services.UserQueryService;
++import org.apache.logging.log4j.util.Strings;
++
++import java.util.ArrayList;
++import java.util.List;
++
++/**
++ * IamContextFacade
++ * <p>
++ *     This class is a facade for the IAM context. It provides a simple interface for other bounded contexts to interact with the
++ *     IAM context.
++ *     This class is a part of the ACL layer.
++ * </p>
++ *
++ */
++public class IamContextFacade {
++    private final UserCommandService userCommandService;
++    private final UserQueryService userQueryService;
++
++    public IamContextFacade(UserCommandService userCommandService, UserQueryService userQueryService) {
++        this.userCommandService = userCommandService;
++        this.userQueryService = userQueryService;
++    }
++
++    /**
++     * Creates a user with the given username and password.
++     * @param username The username of the user.
++     * @param password The password of the user.
++     * @return The id of the created user.
++     */
++    public Long createUser(String username, String password, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++        var signUpCommand = new SignUpCommand(username, password, List.of(Role.getDefaultRole()), email, firstName, paternalSurname, maternalSurname, description, phone, image);
++        var result = userCommandService.handle(signUpCommand);
++        if (result.isEmpty()) return 0L;
++        return result.get().getId();
++    }
++
++    /**
++     * Creates a user with the given username, password and roles.
++     * @param username The username of the user.
++     * @param password The password of the user.
++     * @param roleNames The names of the roles of the user. When a role does not exist, it is ignored.
++     * @return The id of the created user.
++     */
++    public Long createUser(String username, String password, List<String> roleNames, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++        var roles = roleNames != null ? roleNames.stream().map(Role::toRoleFromName).toList() : new ArrayList<Role>();
++        var signUpCommand = new SignUpCommand(username, password, roles, email, firstName, paternalSurname, maternalSurname, description, phone, image);
++        var result = userCommandService.handle(signUpCommand);
++        if (result.isEmpty()) return 0L;
++        return result.get().getId();
++    }
++
++    /**
++     * Fetches the id of the user with the given username.
++     * @param username The username of the user.
++     * @return The id of the user.
++     */
++    public Long fetchUserIdByUsername(String username) {
++        var getUserByUsernameQuery = new GetUserByUsernameQuery(username);
++        var result = userQueryService.handle(getUserByUsernameQuery);
++        if (result.isEmpty()) return 0L;
++        return result.get().getId();
++    }
++
++    /**
++     * Fetches the username of the user with the given id.
++     * @param userId The id of the user.
++     * @return The username of the user.
++     */
++    public String fetchUsernameByUserId(Long userId) {
++        var getUserByIdQuery = new GetUserByIdQuery(userId);
++        var result = userQueryService.handle(getUserByIdQuery);
++        if (result.isEmpty()) return Strings.EMPTY;
++        return result.get().getUsername();
++    }
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileCommandService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileCommandService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileCommandService.java
+new file mode 100644
+--- /dev/null	(date 1729214459766)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileCommandService.java	(date 1729214459766)
+@@ -0,0 +1,7 @@
++package com.innovasoft.remodify.platform.profiles.domain.services;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.commands.CreateProfileCommand;
++
++public interface ProfileCommandService {
++    Long handle(CreateProfileCommand command);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileQueryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileQueryService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileQueryService.java
+new file mode 100644
+--- /dev/null	(date 1729214460224)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/services/ProfileQueryService.java	(date 1729214460224)
+@@ -0,0 +1,15 @@
++package com.innovasoft.remodify.platform.profiles.domain.services;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetAllProfilesQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByEmailQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByIdQuery;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface ProfileQueryService {
++    Optional<Profile> handle(GetProfileByEmailQuery query);
++    Optional<Profile> handle(GetProfileByIdQuery query);
++    List<Profile> handle(GetAllProfilesQuery query);
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/EmailAddress.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/EmailAddress.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/EmailAddress.java
+new file mode 100644
+--- /dev/null	(date 1729214460214)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/EmailAddress.java	(date 1729214460214)
+@@ -0,0 +1,11 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.valueobjects;
++
++import jakarta.persistence.Embeddable;
++import jakarta.validation.constraints.Email;
++
++@Embeddable
++public record EmailAddress(@Email String address) {
++    public EmailAddress() {
++        this(null);
++    }
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/PersonName.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/PersonName.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/PersonName.java
+new file mode 100644
+--- /dev/null	(date 1729214459933)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/domain/model/valueobjects/PersonName.java	(date 1729214459933)
+@@ -0,0 +1,26 @@
++package com.innovasoft.remodify.platform.profiles.domain.model.valueobjects;
++
++public record PersonName(String firstName, String paternalLastName, String maternalLastName) {
++
++    public PersonName(){
++        this(null, null, null);
++    }
++
++    //get Fullname
++    public String getFullName() {
++        return String.format("%s %s %s", firstName, paternalLastName, maternalLastName);
++    }
++
++    //validate null or blank
++    public PersonName {
++        if (firstName == null || firstName.isBlank()) {
++            throw new IllegalArgumentException("Invalid first name");
++        }
++        if (paternalLastName == null || paternalLastName.isBlank()) {
++            throw new IllegalArgumentException("Invalid paternal last name");
++        }
++        if (maternalLastName == null || maternalLastName.isBlank()) {
++            throw new IllegalArgumentException("Invalid maternal last name");
++        }
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignUpCommand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignUpCommand.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignUpCommand.java
+new file mode 100644
+--- /dev/null	(date 1729213123305)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignUpCommand.java	(date 1729213123305)
+@@ -0,0 +1,8 @@
++package com.innovasoft.remodify.platform.iam.domain.model.commands;
++
++import com.innovasoft.remodify.platform.iam.domain.model.entities.Role;
++
++import java.util.List;
++
++public record SignUpCommand(String username, String password, List<Role> roles, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/ProfilesController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/ProfilesController.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/ProfilesController.java
+new file mode 100644
+--- /dev/null	(date 1729214460149)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/ProfilesController.java	(date 1729214460149)
+@@ -0,0 +1,81 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.rest;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetAllProfilesQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByIdQuery;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileCommandService;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileQueryService;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.resources.CreateProfileResource;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.resources.ProfileResource;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.transform.CreateProfileCommandFromResourceAssembler;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.transform.ProfileResourceFromEntityAssembler;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import org.springframework.http.HttpStatus;
++import org.springframework.http.MediaType;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++
++import java.util.List;
++import java.util.stream.Collectors;
++
++/**
++ * ProfilesController
++ * <p>
++ *     This class is the entry point for all the REST endpoints related to the Profile entity.
++ * </p>
++ */
++@RestController
++@RequestMapping(value = "/api/v1/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
++@Tag(name = "Profiles", description = "Profile Management Endpoints")
++public class ProfilesController {
++    private final ProfileQueryService profileQueryService;
++    private final ProfileCommandService profileCommandService;
++
++    public ProfilesController(ProfileQueryService profileQueryService, ProfileCommandService profileCommandService) {
++        this.profileQueryService = profileQueryService;
++        this.profileCommandService = profileCommandService;
++    }
++
++    @PostMapping
++    public ResponseEntity<ProfileResource> createProfile(@RequestBody CreateProfileResource resource) {
++        var createProfileCommand = CreateProfileCommandFromResourceAssembler.toCommandFromResource(resource);
++        var profileId = profileCommandService.handle(createProfileCommand);
++        if (profileId == 0L) {
++            return ResponseEntity.badRequest().build();
++        }
++        var getProfileByIdQuery = new GetProfileByIdQuery(profileId);
++        var profile = profileQueryService.handle(getProfileByIdQuery);
++
++        if (profile.isEmpty()) {
++            return ResponseEntity.badRequest().build();
++        }
++
++        var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profile.get());
++        return new ResponseEntity<>(profileResource, HttpStatus.CREATED);
++    }
++
++    /**
++     * Gets a Profile by its id
++     * @param profileId the id of the Profile to get
++     * @return the Profile resource associated to given Profile id
++     */
++    @GetMapping("/{profileId}")
++    public ResponseEntity<ProfileResource> getProfileById(@PathVariable Long profileId) {
++        var getProfileByIdQuery = new GetProfileByIdQuery(profileId);
++        var profile = profileQueryService.handle(getProfileByIdQuery);
++        if (profile.isEmpty()) return ResponseEntity.badRequest().build();
++        var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profile.get());
++        return ResponseEntity.ok(profileResource);
++    }
++
++    /**
++     * Gets all the Profiles
++     * @return a list of all the Profile resources currently stored
++     */
++    @GetMapping
++    public ResponseEntity<List<ProfileResource>> getAllProfiles() {
++        var getAllProfilesQuery = new GetAllProfilesQuery();
++        var profiles = profileQueryService.handle(getAllProfilesQuery);
++        var profileResources = profiles.stream().map(ProfileResourceFromEntityAssembler::toResourceFromEntity).collect(Collectors.toList());
++        return ResponseEntity.ok(profileResources);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/CreateProfileCommandFromResourceAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/CreateProfileCommandFromResourceAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/CreateProfileCommandFromResourceAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729214460161)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/CreateProfileCommandFromResourceAssembler.java	(date 1729214460161)
+@@ -0,0 +1,17 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.commands.CreateProfileCommand;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.resources.CreateProfileResource;
++
++public class CreateProfileCommandFromResourceAssembler {
++    public static CreateProfileCommand toCommandFromResource(CreateProfileResource resource) {
++        return new CreateProfileCommand(
++                resource.email(),
++                resource.password(),
++                resource.typeUser(),
++                resource.firstName(),
++                resource.paternalSurname(),
++                resource.maternalSurname()
++        );
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/ProfileResourceFromEntityAssembler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/ProfileResourceFromEntityAssembler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/ProfileResourceFromEntityAssembler.java
+new file mode 100644
+--- /dev/null	(date 1729214460315)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/transform/ProfileResourceFromEntityAssembler.java	(date 1729214460315)
+@@ -0,0 +1,16 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.rest.transform;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
++import com.innovasoft.remodify.platform.profiles.interfaces.rest.resources.ProfileResource;
++
++public class ProfileResourceFromEntityAssembler {
++    public static ProfileResource toResourceFromEntity(Profile entity){
++        return new ProfileResource(
++                entity.getId(),
++                entity.getEmailAddress(),
++                entity.getPassword(),
++                entity.getType(),
++                entity.getFullName()
++        );
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/CreateProfileResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/CreateProfileResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/CreateProfileResource.java
+new file mode 100644
+--- /dev/null	(date 1729214459786)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/CreateProfileResource.java	(date 1729214459786)
+@@ -0,0 +1,11 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.rest.resources;
++
++public record CreateProfileResource(
++        String email,
++        String password,
++        String typeUser,
++        String firstName,
++        String paternalSurname,
++        String maternalSurname
++) {
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/RolesController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/RolesController.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/RolesController.java
+new file mode 100644
+--- /dev/null	(date 1729213123974)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/RolesController.java	(date 1729213123974)
+@@ -0,0 +1,33 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest;
++
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllRolesQuery;
++import com.innovasoft.remodify.platform.iam.domain.services.RoleQueryService;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.resources.RoleResource;
++import com.innovasoft.remodify.platform.iam.interfaces.rest.transform.RoleResourceFromEntityAssembler;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import org.springframework.http.MediaType;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++
++@RestController
++@RequestMapping(value = "api/v1/roles", produces = MediaType.APPLICATION_JSON_VALUE)
++@Tag(name = "Roles", description = "Role endpoints")
++public class RolesController {
++    private final RoleQueryService roleQueryService;
++
++    public RolesController(RoleQueryService roleQueryService) {
++        this.roleQueryService = roleQueryService;
++    }
++
++    @GetMapping
++    public ResponseEntity<List<RoleResource>> getAllRoles() {
++        var getAllRolesQuery = new GetAllRolesQuery();
++        var roles = roleQueryService.handle(getAllRolesQuery);
++        var roleResources = roles.stream().map(RoleResourceFromEntityAssembler::toResourceFromEntity).toList();
++        return ResponseEntity.ok(roleResources);
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/ProfileResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/ProfileResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/ProfileResource.java
+new file mode 100644
+--- /dev/null	(date 1729214459748)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/interfaces/rest/resources/ProfileResource.java	(date 1729214459748)
+@@ -0,0 +1,10 @@
++package com.innovasoft.remodify.platform.profiles.interfaces.rest.resources;
++
++public record ProfileResource(
++        Long id,
++        String email,
++        String password,
++        String typeUser,
++        String fullName
++) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/UpdateUserCommand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/UpdateUserCommand.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/UpdateUserCommand.java
+new file mode 100644
+--- /dev/null	(date 1729213123176)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/UpdateUserCommand.java	(date 1729213123176)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.commands;
++
++public record UpdateUserCommand (Long id,String email, String description, String phone, String image){
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/commandservices/ProfileCommandServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/commandservices/ProfileCommandServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/commandservices/ProfileCommandServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729214460057)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/commandservices/ProfileCommandServiceImpl.java	(date 1729214460057)
+@@ -0,0 +1,28 @@
++package com.innovasoft.remodify.platform.profiles.application.internal.commandservices;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
++import com.innovasoft.remodify.platform.profiles.domain.model.commands.CreateProfileCommand;
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.EmailAddress;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileCommandService;
++import com.innovasoft.remodify.platform.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
++import org.springframework.stereotype.Service;
++
++@Service
++public class ProfileCommandServiceImpl implements ProfileCommandService {
++    private final ProfileRepository profileRepository;
++
++    public ProfileCommandServiceImpl(ProfileRepository profileRepository) {
++        this.profileRepository = profileRepository;
++    }
++
++    @Override
++    public Long handle(CreateProfileCommand command) {
++        var emailAddress = new EmailAddress(command.email());
++        profileRepository.findByEmail(emailAddress).map(profile -> {
++            throw new IllegalArgumentException("Profile with email " + command.email() + " already exists");
++        });
++        var profile = new Profile(command.email(), command.password(),command.typeUser(), command.firstName(), command.paternalSurname(), command.maternalSurname());
++        profileRepository.save(profile);
++        return profile.getId();
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/queryservices/ProfileQueryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/queryservices/ProfileQueryServiceImpl.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/queryservices/ProfileQueryServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1729214460325)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/queryservices/ProfileQueryServiceImpl.java	(date 1729214460325)
+@@ -0,0 +1,37 @@
++package com.innovasoft.remodify.platform.profiles.application.internal.queryservices;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetAllProfilesQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByEmailQuery;
++import com.innovasoft.remodify.platform.profiles.domain.model.queries.GetProfileByIdQuery;
++import com.innovasoft.remodify.platform.profiles.domain.services.ProfileQueryService;
++import com.innovasoft.remodify.platform.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++import java.util.Optional;
++
++@Service
++public class ProfileQueryServiceImpl implements ProfileQueryService {
++
++    private final ProfileRepository profileRepository;
++
++    public ProfileQueryServiceImpl(ProfileRepository profileRepository) {
++        this.profileRepository = profileRepository;
++    }
++
++    @Override
++    public Optional<Profile> handle(GetProfileByEmailQuery query) {
++        return profileRepository.findByEmail(query.emailAddress());
++    }
++
++    @Override
++    public Optional<Profile> handle(GetProfileByIdQuery query) {
++        return profileRepository.findById(query.profileId());
++    }
++
++    @Override
++    public List<Profile> handle(GetAllProfilesQuery query) {
++        return profileRepository.findAll();
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleCommandService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleCommandService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleCommandService.java
+new file mode 100644
+--- /dev/null	(date 1729213123902)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/RoleCommandService.java	(date 1729213123902)
+@@ -0,0 +1,7 @@
++package com.innovasoft.remodify.platform.iam.domain.services;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SeedRolesCommand;
++
++public interface RoleCommandService {
++    void handle(SeedRolesCommand command);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/eventhandlers/ApplicationReadyEventHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/eventhandlers/ApplicationReadyEventHandler.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/eventhandlers/ApplicationReadyEventHandler.java
+new file mode 100644
+--- /dev/null	(date 1729214460480)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/application/internal/eventhandlers/ApplicationReadyEventHandler.java	(date 1729214460480)
+@@ -0,0 +1,36 @@
++package com.innovasoft.remodify.platform.profiles.application.internal.eventhandlers;
++
++import com.innovasoft.remodify.platform.iam.domain.model.commands.SeedRolesCommand;
++import com.innovasoft.remodify.platform.iam.domain.services.RoleCommandService;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.boot.context.event.ApplicationReadyEvent;
++import org.springframework.context.event.EventListener;
++import org.springframework.stereotype.Service;
++
++import java.sql.Timestamp;
++
++@Service
++public class ApplicationReadyEventHandler {
++    private final Logger LOGGER = LoggerFactory.getLogger(ApplicationReadyEventHandler.class);
++
++    private final RoleCommandService roleCommandService;
++
++
++    public ApplicationReadyEventHandler(RoleCommandService roleCommandService) {
++        this.roleCommandService = roleCommandService;
++    }
++
++    @EventListener
++    public void on(ApplicationReadyEvent event) {
++        var applicationName = event.getApplicationContext().getId();
++        LOGGER.info("Starting to verify if roles seeding is needed for {} at {}", applicationName, getCurrentTimestamp());
++        var seedRolesCommand = new SeedRolesCommand();
++        roleCommandService.handle(seedRolesCommand);
++        LOGGER.info("Roles seeding verification finished for {} at {}", applicationName, getCurrentTimestamp());
++    }
++
++    private Timestamp getCurrentTimestamp() {
++        return new Timestamp(System.currentTimeMillis());
++    }
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignUpResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignUpResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignUpResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123318)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignUpResource.java	(date 1729213123318)
+@@ -0,0 +1,6 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++import java.util.List;
++
++public record SignUpResource(String username, String password, List<String> roles, String email, String firstName, String paternalSurname, String maternalSurname, String description, String phone, String image) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignInResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignInResource.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignInResource.java
+new file mode 100644
+--- /dev/null	(date 1729213123150)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/interfaces/rest/resources/SignInResource.java	(date 1729213123150)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.interfaces.rest.resources;
++
++public record SignInResource(String username, String password) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignInCommand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignInCommand.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignInCommand.java
+new file mode 100644
+--- /dev/null	(date 1729213123525)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SignInCommand.java	(date 1729213123525)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.commands;
++
++public record SignInCommand(String username, String password) {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserQueryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserQueryService.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserQueryService.java
+new file mode 100644
+--- /dev/null	(date 1729213123694)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/services/UserQueryService.java	(date 1729213123694)
+@@ -0,0 +1,15 @@
++package com.innovasoft.remodify.platform.iam.domain.services;
++
++import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetAllUsersQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByIdQuery;
++import com.innovasoft.remodify.platform.iam.domain.model.queries.GetUserByUsernameQuery;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface UserQueryService {
++    List<User> handle(GetAllUsersQuery query);
++    Optional<User> handle(GetUserByIdQuery query);
++    Optional<User> handle(GetUserByUsernameQuery query);
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/infrastructure/persistence/jpa/repositories/ProfileRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/infrastructure/persistence/jpa/repositories/ProfileRepository.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/infrastructure/persistence/jpa/repositories/ProfileRepository.java
+new file mode 100644
+--- /dev/null	(date 1729214460134)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/profiles/infrastructure/persistence/jpa/repositories/ProfileRepository.java	(date 1729214460134)
+@@ -0,0 +1,14 @@
++package com.innovasoft.remodify.platform.profiles.infrastructure.persistence.jpa.repositories;
++
++import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
++import com.innovasoft.remodify.platform.profiles.domain.model.valueobjects.EmailAddress;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++import java.util.Optional;
++
++@Repository
++public interface ProfileRepository extends JpaRepository<Profile, Long> {
++    Optional<Profile> findByEmail(EmailAddress emailAddress);
++    boolean existsByEmail(EmailAddress emailAddress);
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SeedRolesCommand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SeedRolesCommand.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SeedRolesCommand.java
+new file mode 100644
+--- /dev/null	(date 1729213123880)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/commands/SeedRolesCommand.java	(date 1729213123880)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.commands;
++
++public record SeedRolesCommand() {
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/RemodifyApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/RemodifyApplication.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/RemodifyApplication.java
+new file mode 100644
+--- /dev/null	(date 1729213756288)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/RemodifyApplication.java	(date 1729213756288)
+@@ -0,0 +1,15 @@
++package com.innovasoft.remodify;
++
++import org.springframework.boot.SpringApplication;
++import org.springframework.boot.autoconfigure.SpringBootApplication;
++import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
++
++@EnableJpaAuditing
++@SpringBootApplication
++public class RemodifyApplication {
++
++	public static void main(String[] args) {
++		SpringApplication.run(RemodifyApplication.class, args);
++	}
++
++}
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/persistence/jpa/strategy/SnakeCasePhysicalNamingStrategy.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/persistence/jpa/strategy/SnakeCasePhysicalNamingStrategy.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/persistence/jpa/strategy/SnakeCasePhysicalNamingStrategy.java
+new file mode 100644
+--- /dev/null	(date 1729213123136)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/persistence/jpa/strategy/SnakeCasePhysicalNamingStrategy.java	(date 1729213123136)
+@@ -0,0 +1,56 @@
++package com.innovasoft.remodify.platform.shared.infrastructure.persistence.jpa.strategy;
++
++import org.hibernate.boot.model.naming.Identifier;
++import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
++import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
++
++import static io.github.encryptorcode.pluralize.Pluralize.pluralize;
++
++/**
++ * A custom PhysicalNamingStrategy for Hibernate that converts entity and attribute names
++ * from camel case to snake case and pluralizes table names.
++ */
++
++public class SnakeCasePhysicalNamingStrategy implements PhysicalNamingStrategy {
++    @Override
++    public Identifier toPhysicalCatalogName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
++        return this.toSnakeCase(identifier);
++    }
++
++    @Override
++    public Identifier toPhysicalSchemaName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
++        return this.toSnakeCase(identifier);
++    }
++
++    @Override
++    public Identifier toPhysicalTableName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
++        return this.toSnakeCase(this.toPlural(identifier));
++    }
++
++    @Override
++    public Identifier toPhysicalSequenceName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
++        return this.toSnakeCase(identifier);
++    }
++
++    @Override
++    public Identifier toPhysicalColumnName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
++        return this.toSnakeCase(identifier);
++    }
++
++    private Identifier toSnakeCase(final Identifier identifier) {
++        if (identifier == null) {
++            return null;
++        }
++        final String regex = "([a-z])([A-Z])";
++        final String replacement = "$1_$2";
++        final String newName = identifier.getText()
++                .replaceAll(regex, replacement)
++                .toLowerCase();
++        return Identifier.toIdentifier(newName);
++    }
++
++    private Identifier toPlural(final Identifier identifier) {
++        final String newName = pluralize(identifier.getText());
++        return Identifier.toIdentifier(newName);
++    }
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/documentation/openapi/configuration/OpenApiConfiguration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/documentation/openapi/configuration/OpenApiConfiguration.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/documentation/openapi/configuration/OpenApiConfiguration.java
+new file mode 100644
+--- /dev/null	(date 1729213959527)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/shared/infrastructure/documentation/openapi/configuration/OpenApiConfiguration.java	(date 1729213959527)
+@@ -0,0 +1,41 @@
++package com.innovasoft.remodify.platform.shared.infrastructure.documentation.openapi.configuration;
++
++import io.swagger.v3.oas.models.Components;
++import io.swagger.v3.oas.models.ExternalDocumentation;
++import io.swagger.v3.oas.models.OpenAPI;
++import io.swagger.v3.oas.models.info.Info;
++import io.swagger.v3.oas.models.info.License;
++import io.swagger.v3.oas.models.security.SecurityRequirement;
++import io.swagger.v3.oas.models.security.SecurityScheme;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++
++@Configuration
++public class OpenApiConfiguration {
++    @Bean
++    public OpenAPI restylePlatformOpenApi() {
++        // General configuration
++        var openApi = new OpenAPI();
++        openApi
++                .info(new Info()
++                        .title("Innovasoft Remodify Platform API")
++                        .description("Innovasoft Remodify Platform application REST API documentation.")
++                        .version("v1.0.0")
++                        .license(new License().name("Apache 2.0")
++                                .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
++                .externalDocs(new ExternalDocumentation()
++                        .description("Innovasoft Remodify  Platform Wiki Documentation")
++                        .url("https://innovasoft-remodify -platform.wiki.github.io/docs"));
++
++        final String securitySchemeName = "bearerAuth";
++        openApi.addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
++                .components(new Components()
++                        .addSecuritySchemes(securitySchemeName,
++                                new SecurityScheme()
++                                        .name(securitySchemeName)
++                                        .type(SecurityScheme.Type.HTTP)
++                                        .scheme("bearer")
++                                        .bearerFormat("JWT")));
++        return openApi;
++    }
++}
+\ No newline at end of file
+Index: Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByIdQuery.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByIdQuery.java b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByIdQuery.java
+new file mode 100644
+--- /dev/null	(date 1729213123143)
++++ b/Remodify-microservice-iam/src/main/java/com/innovasoft/remodify/platform/iam/domain/model/queries/GetUserByIdQuery.java	(date 1729213123143)
+@@ -0,0 +1,4 @@
++package com.innovasoft.remodify.platform.iam.domain.model.queries;
++
++public record GetUserByIdQuery(Long userId) {
++}
