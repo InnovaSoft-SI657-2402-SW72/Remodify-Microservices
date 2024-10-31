@@ -7,3 +7,9 @@ class ReviewsResource(BaseModel):
     rating: int
     comment: str
     image: str
+
+
+class UpdateReviewResource(BaseModel):
+    duration: str
+    comment: str
+    image: str
