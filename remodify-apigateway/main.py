@@ -20,7 +20,7 @@ app = FastAPI(
 
 async def is_token_valid(token: str) -> bool:
     try:
-        response = requests.post(f"{MICROSERVICE_IAM}/validate-token", json={"token": token})
+        response = requests.post(f"{MICROSERVICE_IAM}/authentication/validate-token", json={"token": token})
         response.raise_for_status()  # Esto lanzará una excepción para códigos de estado 4xx/5xx
         if response.json().get("valid") == True:
             return True
@@ -47,7 +47,8 @@ async def check_token(request: Request, call_next):
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in middleware: {e}")
-
+    
+    
 app.include_router(iam_router, tags=["IAM Microservice"])
 app.include_router(users_router, tags=["IAM Microservice"])
 app.include_router(profiles_router, tags=["IAM Microservice"])

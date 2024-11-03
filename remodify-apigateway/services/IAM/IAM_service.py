@@ -17,3 +17,4 @@ async def sign_in(request: Request, signInRequest: SignUpRequest):
     url = f"{MICROSERVICE_IAM}/authentication/sign-up"
     response = requests.post(url, headers=request.headers, json=signInRequest.model_dump())
     return response.json()
+
