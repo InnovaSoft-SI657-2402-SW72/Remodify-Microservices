@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  business:
+    image: remodify-microservice-business
+    container_name: business
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+
+  iam:
+    image: remodify-microservice-iam
+    container_name: iam
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+
+  project:
+    image: remodify-microservice-project
+    container_name: project
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+
+  reviews:
+    image: remodify-microservice-reviews
+    container_name: reviews
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+
+  projectrequest:
+    image: remodify-microservice-projectrequest
+    container_name: projectrequest
+    ports:
+      - "8085:8085"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
