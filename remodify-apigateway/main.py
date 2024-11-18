@@ -9,7 +9,7 @@ from services.IAM.contractors_services import contractors_router
 from services.IAM.remodelers_services import remodelers_router
 from services.Business.business_service import business_router
 from services.Project.project_service import project_router
-from services.ProjectRequest.projectrequest_service import projectrequest_router
+from services.ProjectRequest.projectrequest_service import project_request_router
 from services.Reviews.reviews_service import reviews_router
 
 app = FastAPI(
@@ -56,5 +56,5 @@ app.include_router(contractors_router, tags=["IAM Microservice"])
 app.include_router(remodelers_router, tags=["IAM Microservice"])
 app.include_router(business_router, tags=["Business Microservice"])
 app.include_router(project_router, tags=["Project Microservice"])
-app.include_router(projectrequest_router, tags=["ProjectRequest Microservice"])
+app.include_router(project_request_router, tags=["ProjectRequest Microservice"])
 app.include_router(reviews_router, tags=["Reviews Microservice"])

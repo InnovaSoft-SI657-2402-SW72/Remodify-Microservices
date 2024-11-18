@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 import requests
 from configs.url_services import MICROSERVICE_PROJECT
 from models.Project import ProjectResource
@@ -19,8 +19,14 @@ async def route_to_service_project(request: Request, projectResource: ProjectRes
 
 @project_router.get("/projects/{id}")
 async def route_to_service_project(request: Request, id: int):
+    if id <= 0:
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    
     url = f"{MICROSERVICE_PROJECT}/{id}"
     response = requests.get(url, headers=request.headers)
+    if response.status_code == 404:
+        raise HTTPException(status_code=404, detail="ID not found")
+    
     return response.json()
 
 @project_router.get("/projects/search/")
