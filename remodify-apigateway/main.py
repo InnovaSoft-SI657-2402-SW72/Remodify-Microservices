@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 import requests
+from starlette.responses import JSONResponse
 from configs.url_publics import PUBLIC_URLS
 from configs.url_services import MICROSERVICE_IAM
 from services.IAM.IAM_service import iam_router
@@ -9,7 +10,7 @@ from services.IAM.contractors_services import contractors_router
 from services.IAM.remodelers_services import remodelers_router
 from services.Business.business_service import business_router
 from services.Project.project_service import project_router
-from services.ProjectRequest.projectrequest_service import projectrequest_router
+from services.ProjectRequest.projectrequest_service import project_request_router
 from services.Reviews.reviews_service import reviews_router
 
 app = FastAPI(
@@ -45,10 +46,11 @@ async def check_token(request: Request, call_next):
         
         response = await call_next(request)
         return response
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error in middleware: {e}")
-    
-    
+        return JSONResponse(status_code=500, content={"detail": f"Error in middleware: {str(e)}"})
+
 app.include_router(iam_router, tags=["IAM Microservice"])
 app.include_router(users_router, tags=["IAM Microservice"])
 app.include_router(profiles_router, tags=["IAM Microservice"])
@@ -56,5 +58,5 @@ app.include_router(contractors_router, tags=["IAM Microservice"])
 app.include_router(remodelers_router, tags=["IAM Microservice"])
 app.include_router(business_router, tags=["Business Microservice"])
 app.include_router(project_router, tags=["Project Microservice"])
-app.include_router(projectrequest_router, tags=["ProjectRequest Microservice"])
+app.include_router(project_request_router, tags=["ProjectRequest Microservice"])
 app.include_router(reviews_router, tags=["Reviews Microservice"])
