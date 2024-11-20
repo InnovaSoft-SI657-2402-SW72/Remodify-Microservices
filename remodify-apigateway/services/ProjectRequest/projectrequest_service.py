@@ -15,7 +15,7 @@ async def route_to_service_project_request(request: Request):
 
 @project_request_router.post("/project-requests/")
 async def route_to_service_project_request(request: Request, projectRequestResource: ProjectRequestResource):
-    url = f"{MICROSERVICE_PROJECT_REQUEST}/api/v1/project-requests"
+    url = f"{MICROSERVICE_PROJECT_REQUEST}"
     response = requests.post(url, headers=request.headers, json=projectRequestResource.dict())
     if response.status_code != 201:
         raise HTTPException(status_code=response.status_code, detail=response.json())
@@ -26,7 +26,7 @@ async def route_to_service_project_request(request: Request, id: int):
     if id <= 0:
         raise HTTPException(status_code=400, detail="Invalid ID")
     
-    url = f"{MICROSERVICE_PROJECT_REQUEST}/api/v1/project-requests/{id}"
+    url = f"{MICROSERVICE_PROJECT_REQUEST}/{id}"
     response = requests.get(url, headers=request.headers)
     if response.status_code == 404:
         raise HTTPException(status_code=404, detail="ID not found")
@@ -37,7 +37,7 @@ async def route_to_service_project_request(request: Request, id: int):
 
 @project_request_router.get("/project-requests/search/")
 async def route_to_service_project_request(request: Request, businessId: int = None, contractorId: int = None):
-    url = f"{MICROSERVICE_PROJECT_REQUEST}/api/v1/project-requests/search"
+    url = f"{MICROSERVICE_PROJECT_REQUEST}/search"
     params = {}
     if businessId is not None:
         params["businessId"] = businessId

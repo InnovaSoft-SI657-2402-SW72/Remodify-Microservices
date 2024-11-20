@@ -5,9 +5,9 @@ from models.Remodelers import RemodelersResource
 
 remodelers_router = APIRouter()
 
-@remodelers_router.post("/remodelers/")
+@remodelers_router.post("/remodelers")
 async def route_to_service_remodelers(request: Request, remodelersResource: RemodelersResource):
-    url = f"{MICROSERVICE_IAM}/api/v1/remodelers"
+    url = f"{MICROSERVICE_IAM}/remodelers"
     response = requests.post(url, headers=request.headers, json=remodelersResource.dict())
     if response.status_code != 201:
         raise HTTPException(status_code=response.status_code, detail=response.json())
@@ -16,7 +16,7 @@ async def route_to_service_remodelers(request: Request, remodelersResource: Remo
     if not remodeler_id:
         raise HTTPException(status_code=400, detail="Invalid response from server")
     
-    url = f"{MICROSERVICE_IAM}/api/v1/remodelers/{remodeler_id}"
+    url = f"{MICROSERVICE_IAM}/remodelers/{remodeler_id}"
     response = requests.get(url, headers=request.headers)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.json())
@@ -28,7 +28,7 @@ async def route_to_service_remodelers(request: Request, remodelerId: int):
     if remodelerId <= 0:
         raise HTTPException(status_code=400, detail="Invalid ID")
     
-    url = f"{MICROSERVICE_IAM}/api/v1/remodelers/{remodelerId}"
+    url = f"{MICROSERVICE_IAM}/remodelers/{remodelerId}"
     response = requests.get(url, headers=request.headers)
     if response.status_code == 404:
         raise HTTPException(status_code=404, detail="ID not found")
