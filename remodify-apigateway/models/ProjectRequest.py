@@ -14,3 +14,8 @@ class ProjectRequestResource(BaseModel):
     deadlineDate: datetime
     rooms: int = Field(..., gt=0)
     budget: int = Field(..., gt=0)
+
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat(),
+        }
