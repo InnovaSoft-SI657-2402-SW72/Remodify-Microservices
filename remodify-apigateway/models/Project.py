@@ -9,3 +9,8 @@ class ProjectResource(BaseModel):
     startDate: datetime
     finishDate: datetime
     image: str = Field(..., min_length=1, max_length=500)
+
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat(),
+        }

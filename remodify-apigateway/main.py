@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 import requests
+from starlette.responses import JSONResponse
 from configs.url_publics import PUBLIC_URLS
 from configs.url_services import MICROSERVICE_IAM
 from services.IAM.IAM_service import iam_router
@@ -45,10 +46,11 @@ async def check_token(request: Request, call_next):
         
         response = await call_next(request)
         return response
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error in middleware: {e}")
-    
-    
+        return JSONResponse(status_code=500, content={"detail": f"Error in middleware: {str(e)}"})
+
 app.include_router(iam_router, tags=["IAM Microservice"])
 app.include_router(users_router, tags=["IAM Microservice"])
 app.include_router(profiles_router, tags=["IAM Microservice"])
