@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  # Servicio para el API Gateway
+  api-gateway:
+    image: remodify-api-gateway
+    container_name: api-gateway
+    ports:
+      - "8000:8000"  # Mapea el puerto 8000 del contenedor al 8000 de la VM
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net  # Actualiza esta dirección si tu base de datos está en Azure
+      - DB_PORT=18827
+      - DB_USER=root
+      - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Servicio para el microservicio business
   business:
     image: remodify-microservice-business
     container_name: business
@@ -11,7 +27,11 @@ services:
       - DB_PORT=18827
       - DB_USER=root
       - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
 
+  # Servicio para el microservicio IAM
   iam:
     image: remodify-microservice-iam
     container_name: iam
@@ -22,7 +42,11 @@ services:
       - DB_PORT=18827
       - DB_USER=root
       - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
 
+  # Servicio para el microservicio project
   project:
     image: remodify-microservice-project
     container_name: project
@@ -33,7 +57,11 @@ services:
       - DB_PORT=18827
       - DB_USER=root
       - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
 
+  # Servicio para el microservicio reviews
   reviews:
     image: remodify-microservice-reviews
     container_name: reviews
@@ -44,7 +72,11 @@ services:
       - DB_PORT=18827
       - DB_USER=root
       - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
 
+  # Servicio para el microservicio projectrequest
   projectrequest:
     image: remodify-microservice-projectrequest
     container_name: projectrequest
@@ -55,3 +87,11 @@ services:
       - DB_PORT=18827
       - DB_USER=root
       - DB_PASSWORD=tptIIdsajhIcJGRTCGsPaEwWMtfTUvxN
+    networks:
+      - app-network
+    restart: unless-stopped
+
+# Definición de la red personalizada
+networks:
+  app-network:
+    driver: bridge

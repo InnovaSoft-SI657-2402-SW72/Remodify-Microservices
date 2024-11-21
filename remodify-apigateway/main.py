@@ -12,6 +12,7 @@ from services.Business.business_service import business_router
 from services.Project.project_service import project_router
 from services.ProjectRequest.projectrequest_service import project_request_router
 from services.Reviews.reviews_service import reviews_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Remodify API Gateway",
@@ -28,7 +29,7 @@ async def is_token_valid(token: str) -> bool:
         return False
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error validating token: {e}")
-
+    
 @app.middleware("http")
 async def check_token(request: Request, call_next):
     try:
@@ -50,6 +51,16 @@ async def check_token(request: Request, call_next):
         return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": f"Error in middleware: {str(e)}"})
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir todos los orígenes (para depuración)
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos
+    allow_headers=["*"],  # Permite todos los encabezados
+)
+
 
 app.include_router(iam_router, tags=["IAM Microservice"])
 app.include_router(users_router, tags=["IAM Microservice"])
