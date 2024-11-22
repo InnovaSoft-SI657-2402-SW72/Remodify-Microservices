@@ -8,6 +8,7 @@ public class CreateContractorCommandFromResourceAssembler {
 
         public static CreateContractorCommand toCommandFromResource(CreateContractorResource resource) {
             return new CreateContractorCommand(
+                    resource.userId(),
                     resource.description(),
                     resource.phone()
             );

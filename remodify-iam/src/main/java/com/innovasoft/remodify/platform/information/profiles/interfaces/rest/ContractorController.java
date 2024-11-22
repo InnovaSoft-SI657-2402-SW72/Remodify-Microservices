@@ -3,6 +3,7 @@ package com.innovasoft.remodify.platform.information.profiles.interfaces.rest;
 
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetAllContractorQuery;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByIdQuery;
+import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByUserIdQuery;
 import com.innovasoft.remodify.platform.information.profiles.domain.services.ContractorCommandService;
 import com.innovasoft.remodify.platform.information.profiles.domain.services.ContractorQueryService;
 import com.innovasoft.remodify.platform.information.profiles.interfaces.rest.resources.ContractorResource;
@@ -59,6 +60,15 @@ public class ContractorController {
     public ResponseEntity<ContractorResource> getContractorById(@PathVariable Long contractorId) {
         var getContractorByIdQuery = new GetContractorByIdQuery(contractorId);
         var contractor = contractorQueryService.handle(getContractorByIdQuery);
+        if (contractor.isEmpty()) return ResponseEntity.badRequest().build();
+        var contractorResource = ContractorResourceFromEntityAssembler.toResourceFromEntity(contractor.get());
+        return ResponseEntity.ok(contractorResource);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ContractorResource> getContractorByUserId(@PathVariable Long userId) {
+        var getContractorByUserIdQuery = new GetContractorByUserIdQuery(userId);
+        var contractor = contractorQueryService.handle(getContractorByUserIdQuery);
         if (contractor.isEmpty()) return ResponseEntity.badRequest().build();
         var contractorResource = ContractorResourceFromEntityAssembler.toResourceFromEntity(contractor.get());
         return ResponseEntity.ok(contractorResource);

@@ -1,4 +1,4 @@
 package com.innovasoft.remodify.platform.information.profiles.domain.model.commands;
 
-public record CreateContractorCommand(String description, String phone) {
+public record CreateContractorCommand(Long userId,String description, String phone) {
 }

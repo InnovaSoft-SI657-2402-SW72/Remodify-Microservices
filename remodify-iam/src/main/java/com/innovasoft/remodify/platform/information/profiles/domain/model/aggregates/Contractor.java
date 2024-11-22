@@ -1,5 +1,6 @@
 package com.innovasoft.remodify.platform.information.profiles.domain.model.aggregates;
 
+import com.innovasoft.remodify.platform.iam.domain.model.aggregates.User;
 import com.innovasoft.remodify.platform.profiles.domain.model.aggregates.Profile;
 import com.innovasoft.remodify.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ public class Contractor extends AuditableAbstractAggregateRoot<Contractor> {
     @Getter
     @OneToOne
     @JoinColumn(name = "user_id")
-    private Profile profile;
+    private User user;
 
     @Getter
     private String phone;
@@ -28,9 +29,14 @@ public class Contractor extends AuditableAbstractAggregateRoot<Contractor> {
     private String description;
 
 
-    public Contractor(String description, String phone) {
+    public Contractor(String description, String phone,User UserId) {
+        this.user = UserId;
         this.description = description;
         this.phone = phone;
+    }
+
+    public long getUserId() {
+        return user.getId();
     }
 
     public Contractor() {}

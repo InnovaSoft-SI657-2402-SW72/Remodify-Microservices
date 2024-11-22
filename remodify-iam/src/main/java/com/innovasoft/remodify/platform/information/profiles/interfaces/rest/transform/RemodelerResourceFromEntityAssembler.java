@@ -8,9 +8,9 @@ public class RemodelerResourceFromEntityAssembler {
         public static RemodelerResource toResourceFromEntity(Remodeler remodeler) {
             return new RemodelerResource(
                     remodeler.getId(),
+                    remodeler.getUserId(),
                     remodeler.getDescription(),
-                    remodeler.getPhone(),
-                    remodeler.getSubscription()
+                    remodeler.getPhone()
             );
         }
 }

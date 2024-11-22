@@ -6,9 +6,9 @@ import com.innovasoft.remodify.platform.information.profiles.interfaces.rest.res
 public class CreateRemodelerCommandFromResourceAssembler {
     public static CreateRemodelerCommand toCommandFromResource(CreateRemodelerResource resource){
         return new CreateRemodelerCommand(
+                resource.userId(),
                 resource.description(),
-                resource.phone(),
-                resource.subscription()
+                resource.phone()
         );
     }
 }

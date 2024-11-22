@@ -3,6 +3,7 @@ package com.innovasoft.remodify.platform.information.profiles.domain.services;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.aggregates.Contractor;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetAllContractorQuery;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByIdQuery;
+import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByUserIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,4 +13,5 @@ public interface ContractorQueryService {
 
     List<Contractor> handle(GetAllContractorQuery query);
     Optional<Contractor> handle(GetContractorByIdQuery query);
+    Optional<Contractor> handle(GetContractorByUserIdQuery query);
 }

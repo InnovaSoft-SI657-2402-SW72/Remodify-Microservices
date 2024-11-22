@@ -10,6 +10,7 @@ public class ContractorResourceFromEntityAssembler {
     public static ContractorResource toResourceFromEntity(Contractor entity){
         return new ContractorResource(
                 entity.getId(),
+                entity.getUserId(),
                 entity.getDescription(),
                 entity.getPhone()
         );

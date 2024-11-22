@@ -32,5 +32,17 @@ async def route_to_service_contractors(request: Request, contractorId: int):
         raise HTTPException(status_code=404, detail="ID not found")
     elif response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.json())
+
+@contractors_router.get("/Contractors/user/{userId}")
+async def route_to_service_contractors(request: Request, userId: int):
+    if userId <= 0:
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    
+    url = f"{MICROSERVICE_IAM}/Contractors/user/{userId}"
+    response = requests.get(url, headers=request.headers)
+    if response.status_code == 404:
+        raise HTTPException(status_code=404, detail="ID not found")
+    elif response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
     
     return response.json()

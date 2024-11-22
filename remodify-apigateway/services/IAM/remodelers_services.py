@@ -5,6 +5,7 @@ from models.Remodelers import RemodelersResource
 
 remodelers_router = APIRouter()
 
+
 @remodelers_router.post("/remodelers")
 async def route_to_service_remodelers(request: Request, remodelersResource: RemodelersResource):
     url = f"{MICROSERVICE_IAM}/remodelers"
@@ -29,6 +30,20 @@ async def route_to_service_remodelers(request: Request, remodelerId: int):
         raise HTTPException(status_code=400, detail="Invalid ID")
     
     url = f"{MICROSERVICE_IAM}/remodelers/{remodelerId}"
+    response = requests.get(url, headers=request.headers)
+    if response.status_code == 404:
+        raise HTTPException(status_code=404, detail="ID not found")
+    elif response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+    return response.json()
+
+@remodelers_router.get("/remodelers/user/{userId}")
+async def route_to_service_remodelers(request: Request, userId: int):
+    if userId <= 0:
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    
+    url = f"{MICROSERVICE_IAM}/remodelers/user/{userId}"
     response = requests.get(url, headers=request.headers)
     if response.status_code == 404:
         raise HTTPException(status_code=404, detail="ID not found")

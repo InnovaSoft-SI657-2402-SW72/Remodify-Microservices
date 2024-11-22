@@ -3,6 +3,7 @@ package com.innovasoft.remodify.platform.information.profiles.application.intern
 import com.innovasoft.remodify.platform.information.profiles.domain.model.aggregates.Contractor;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetAllContractorQuery;
 import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByIdQuery;
+import com.innovasoft.remodify.platform.information.profiles.domain.model.queries.GetContractorByUserIdQuery;
 import com.innovasoft.remodify.platform.information.profiles.domain.services.ContractorQueryService;
 import com.innovasoft.remodify.platform.information.profiles.infrastructure.persistence.jpa.repositories.ContractorRepository;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,10 @@ public class ContractorQueryServiceImpl implements ContractorQueryService {
     public Optional<Contractor> handle(GetContractorByIdQuery query) {
         //Obtener un contractor por id
         return contractorRepository.findById(query.getId());
+    }
+
+    @Override
+    public Optional<Contractor> handle(GetContractorByUserIdQuery query) {
+        return contractorRepository.findByUserId(query.userId());
     }
 }
